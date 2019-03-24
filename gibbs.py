@@ -8,7 +8,7 @@ import os
 import random
 import numpy as np
 import numpy.random as nprand
-from itertools import izip
+
 import scipy.stats.distributions as dist
 import particle
 
@@ -17,7 +17,7 @@ import particle
 
 #Utility functions:
 
-argmax = lambda array: max(izip(array, xrange(len(array))))[1]
+argmax = lambda array: max(zip(array, range(len(array))))[1]
 
 def tatval(df, mu, sigma, x):
     tdist = dist.t([df])
@@ -105,12 +105,12 @@ class GibbsSamplerPart(particle.RationalParticle):
                 
                 self.additemBayes( stim )
                 if VERBOSE:
-                    print "Iteration %d" % samp
+                    print("Iteration %d" % samp)
              
             if samp > self.burnin and (samp - self.burnin)% self.spacing == 0:
              
-                print self.partition
-                print "Sample: ", (samp-self.burnin) // self.spacing
+                print(self.partition)
+                print("Sample: ", (samp-self.burnin) // self.spacing)
                 ofile.write( str( self.partition )[1:-1] )
                 ofile.flush()
         
@@ -212,7 +212,7 @@ class GibbsSampler:
         elif self.types[i] == 'd': # if discrete use binomial or whatever
             return self.probClustVal(k, i, val)
         else:
-            raise Exception, "Unrecognized dimension type."
+            raise Exception("Unrecognized dimension type.")
     
     def stimprob(self, stim, k, env=None ):
         """
@@ -259,13 +259,13 @@ class GibbsSampler:
         if sum(pk*pfk) > 0:
             pkf = (pk*pfk) / float(sum( pk*pfk ))
         else:
-            raise "Could not compute posterior"
+            raise Exception("Could not compute posterior")
             #pkf = np.ones(len(pk))/float(len(pk))  # 1/# of clusters ... shouldn't this never happen?
         
         if VERBOSE:
-            print "p(k)s: ", pk
-            print "p(f|k)s: ", pfk
-            print "p(k|f): ", pkf
+            print("p(k)s: ", pk)
+            print("p(f|k)s: ", pfk)
+            print("p(k|f): ", pkf)
         
         self.currentposterior = pkf
         self.laststim = stim
@@ -287,8 +287,8 @@ class GibbsSampler:
         Softmax of P(k|F) + P(0|F)
         """
         if VERBOSE:
-            print "Stim: ", stim
-            print "Partition: ",  self.partition
+            print("Stim: ", stim)
+            print("Partition: ",  self.partition)
             #print self.posterior(stim)
         
         # choose a sample at random from this distribution and add the cluster here
@@ -308,9 +308,9 @@ class GibbsSampler:
         """
         winner = argmax( self.getposterior() )
         if VERBOSE:
-            print "Stim: ", stim
-            print "Partition: ", self.partition
-            print self.posterior(stim)
+            print("Stim: ", stim)
+            print("Partition: ", self.partition)
+            print(self.posterior(stim))
         
         if not winner in self.partition:
             self.clusters += 1
@@ -340,12 +340,12 @@ class GibbsSampler:
                 
                 self.additemBayes( stim )
                 if VERBOSE:
-                    print "Iteration %d" % samp
+                    print("Iteration %d" % samp)
              
             if samp > self.burnin and (samp - self.burnin)% self.spacing == 0:
              
-                print self.partition
-                print "Sample: ", (samp-self.burnin) // self.spacing
+                print(self.partition)
+                print("Sample: ", (samp-self.burnin) // self.spacing)
                 ofile.write( str( self.partition )[1:-1] )
                 ofile.flush()
         
@@ -363,7 +363,7 @@ def AnalyzeExp():
     sampleargs = [nsamples, spacing, burnin]
     
     for filename in files:
-        print filename
+        print(filename)
         cond = int(open( filename ).readlines()[1].split()[1])
         if cond == 0: # ignore 'FR's
             continue

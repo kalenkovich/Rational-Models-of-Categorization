@@ -10,9 +10,9 @@ from random import randrange
 import os
 
 import particle as particle
-from itertools import izip
 
-argmax = lambda array: max(izip(array, xrange(len(array))))[1]
+
+argmax = lambda array: max(zip(array, range(len(array))))[1]
 
 
 class particlefilter():
@@ -26,7 +26,7 @@ class particlefilter():
         self.args = args
         self.m = m
         self.particles = []
-        for i in xrange( self.m ):
+        for i in range( self.m ):
             self.particles.append( particle.RationalParticle(self.args, decision="Soft") )
             self.particles[-1].id = i
     
@@ -41,7 +41,7 @@ class particlefilter():
     
     def getnclusters(self):
         #clusterdist = self.getclusterdist()
-        print [s.getNClusters() for s in self.particles]
+        print([s.getNClusters() for s in self.particles])
     
     def getclusterdist(self):
         maxclustertocount = 12
@@ -59,9 +59,9 @@ class particlefilter():
     def uniquepartitions(self):
         ret = {}
         parts = self.getfullpartition()
-        for i in xrange( len( parts ) ):
+        for i in range( len( parts ) ):
             part = tuple( parts[i] )
-            if not part in ret.keys():
+            if not part in list(ret.keys()):
                 ret[ part ] = [i]
             else:
                 ret[ part ].append( i )
@@ -81,20 +81,20 @@ class particlefilter():
         ppost = posteriors / sum( posteriors )
         #print ppost
         
-        samples = [ int( sum( np.cumsum(ppost) < nprand.random() ) ) for _ in xrange( self.m ) ]
-        samplesenum = [ [id, samples.count(id)] for id in xrange( len(self.particles) ) ]
+        samples = [ int( sum( np.cumsum(ppost) < nprand.random() ) ) for _ in range( self.m ) ]
+        samplesenum = [ [id, samples.count(id)] for id in range( len(self.particles) ) ]
         #for s in samples:
         #    print s,
         #    print self.particles[s].id
-        print "Unique partitions:"
-        print self.uniquepartitions()
+        print("Unique partitions:")
+        print(self.uniquepartitions())
         
         newparticles = []
         #newids = [] (for aliasing)
         
         for id, count in samplesenum:
             if count > 0:
-                for i in xrange(count):
+                for i in range(count):
                     # The whole deepcopy thing definitely works...
                     newparticles.append(copy.deepcopy(self.particles[id]))
                     newparticles[-1].additemBayes( stimnum )
@@ -144,7 +144,7 @@ def testcontinuous():
     
     model = particlefilter(args, m)
     for i, s in enumerate( stims ):
-        print i
+        print(i)
         #model.findMAPval(stim, 'cc?')
         model.iterate(s)
         #model.getnclusters()
@@ -158,7 +158,7 @@ def testcontinuous():
         cols = np.column_stack([ labels, thispartition ])
         for clust in range( len(np.unique(thispartition)) ):
             thesepoints = []
-            for i in xrange( len( thispartition ) ):
+            for i in range( len( thispartition ) ):
                 if thispartition[i]==clust:
                     thesepoints.append( stims[i] )
             thesepoints = np.array( thesepoints )
